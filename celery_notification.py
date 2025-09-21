@@ -33,8 +33,8 @@ async def run_notify():
         sender_ncaaf.runner()
     )
 
-    nfl_manager = ProcessManager(redis_database=1, difference_amount=1500, league="NFL")
-    ncaaf_manager = ProcessManager(redis_database=2, difference_amount=1500, league="NCAAF")
+    nfl_manager = ProcessManager(redis_database=8, difference_amount=1500, league="NFL")
+    ncaaf_manager = ProcessManager(redis_database=9, difference_amount=1500, league="NCAAF")
 
     nfl_manager.manger(nfl_data["NFL"], "NFL")
     ncaaf_manager.manger(ncaaf_data["NCAAF"], "NCAAF")
