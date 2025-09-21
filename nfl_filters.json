@@ -1,0 +1,19 @@
+{
+    "NFL": [
+      {
+        "raw_name": "rushing_attempts",
+        "display_name": "Rushing Attempts",
+        "active": true
+      },
+      {
+        "raw_name": "receptions",
+        "display_name": "Receptions",
+        "active": true
+      },
+      {
+        "raw_name": "rushing_attempts",
+        "display_name": "Rushing Attempts",
+        "active": true
+      }
+    ]
+}
