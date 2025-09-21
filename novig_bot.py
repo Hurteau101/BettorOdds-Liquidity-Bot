@@ -31,15 +31,15 @@ if __name__ == "__main__":
             ncaaf_filters = json.load(f)
 
         sender_nfl = NovigSender(filter_data=nfl_filters, difference_amount=3000)
-        sender_ncaaf = NovigSender(filter_data=ncaaf_filters, difference_amount=4000)
+        sender_ncaaf = NovigSender(filter_data=ncaaf_filters, difference_amount=1000)
 
         nfl_data, ncaaf_data = await asyncio.gather(
             sender_nfl.runner(),
             sender_ncaaf.runner()
         )
 
-        nfl_manager = ProcessManager(redis_database=1, difference_amount=1500, league="NFL")
-        ncaaf_manager = ProcessManager(redis_database=2, difference_amount=1500, league="NCAAF")
+        nfl_manager = ProcessManager(redis_database=8, difference_amount=1500, league="NFL")
+        ncaaf_manager = ProcessManager(redis_database=9, difference_amount=1500, league="NCAAF")
 
         nfl_manager.manger(nfl_data["NFL"], "NFL")
         ncaaf_manager.manger(ncaaf_data["NCAAF"], "NCAAF")
