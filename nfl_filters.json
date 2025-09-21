@@ -6,6 +6,16 @@
         "active": true
       },
       {
+        "raw_name": "TOUCHDOWNS",
+        "display_name": "Anytime Touchdown",
+        "active": true
+      },
+      {
+        "raw_name": "PASSING_TOUCHDOWNS",
+        "display_name": "Passing Touchdowns",
+        "active": true
+      },
+      {
         "raw_name": "receptions",
         "display_name": "Receptions",
         "active": true
