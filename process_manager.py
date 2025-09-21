@@ -40,10 +40,10 @@ class ProcessManager:
 
             if redis_current_diff is None:
                 # New player
-                # self.store_player(pipeline, player_key, player_liquidity_difference, start_date_dt)
+                self.store_player(pipeline, player_key, player_liquidity_difference, start_date_dt)
                 self.discord_bot.discord_message(player, market_changed=False)
 
             elif abs(float(redis_current_diff) - player_liquidity_difference) >= self.difference_amount:
                 # Existing player but difference changed a lot
-                # self.store_player(pipeline, player_key, player_liquidity_difference, start_date_dt)
+                self.store_player(pipeline, player_key, player_liquidity_difference, start_date_dt)
                 self.discord_bot.discord_message(player, market_changed=True)
