@@ -6,8 +6,8 @@
         "active": true
       },
       {
-        "raw_name": "TOUCHDOWNS",
-        "display_name": "Anytime Touchdown",
+        "raw_name": "rushing_yards",
+        "display_name": "Rushing Yards",
         "active": true
       },
       {
@@ -16,14 +16,30 @@
         "active": true
       },
       {
-        "raw_name": "receptions",
-        "display_name": "Receptions",
+        "raw_name": "passing_yards",
+        "display_name": "Passing Yards",
         "active": true
       },
       {
-        "raw_name": "rushing_attempts",
-        "display_name": "Rushing Attempts",
+        "raw_name": "passing_attempts",
+        "display_name": "Passing Attempts",
+        "active": true
+      },
+      {
+        "raw_name": "passing_completions",
+        "display_name": "Passing Completions",
+        "active": true
+      },
+      {
+        "raw_name": "receiving_yards",
+        "display_name": "Receiving Yards",
+        "active": true
+      },
+      {
+        "raw_name": "receptions",
+        "display_name": "Receptions",
         "active": true
       }
+
     ]
 }
