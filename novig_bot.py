@@ -22,6 +22,13 @@ class NovigSender:
 
 
 if __name__ == "__main__":
+    # import asyncio
+    # raw = asyncio.run(Novig.get_raw_data(["NCAAF"]))
+    # import json
+    #
+    # with open("raw.json", "w") as f:
+    #     json.dump(raw, f, indent=4)
+
     import asyncio
 
     async def main():
@@ -31,7 +38,7 @@ if __name__ == "__main__":
             ncaaf_filters = json.load(f)
 
         sender_nfl = NovigSender(filter_data=nfl_filters, difference_amount=3000)
-        sender_ncaaf = NovigSender(filter_data=ncaaf_filters, difference_amount=1000)
+        sender_ncaaf = NovigSender(filter_data=ncaaf_filters, difference_amount=2000)
 
         nfl_data, ncaaf_data = await asyncio.gather(
             sender_nfl.runner(),
@@ -45,3 +52,4 @@ if __name__ == "__main__":
         ncaaf_manager.manger(ncaaf_data["NCAAF"], "NCAAF")
 
     asyncio.run(main())
+

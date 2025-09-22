@@ -81,6 +81,7 @@ class DiscordBot:
 
 
         notification = self.create_notification(main_title, game_start_time, data, market_changed, stat_type)
+
         self.discord.post(embeds=[notification])
 
     @staticmethod
@@ -89,16 +90,96 @@ class DiscordBot:
             return f"+{value}"
         return str(value)
 
+    # def create_notification(self, main_title, start_time, market_data, market_change, stat_type):
+    #     fields = []
+    #
+    #     previous_message = "*(Play was sent previously but market moved +/- 1500)*\n" if market_change else ""
+    #
+    #     over_data = market_data.get("liquidity", {}).get("over", {}).get("highest_order", {})
+    #     under_data = market_data.get("liquidity", {}).get("under", {}).get("highest_order", {})
+    #
+    #
+    #
+    #     highest = max(
+    #         market_data["liquidity"].values(),
+    #         key=lambda x: x["highest_order"]["total_liquidity"]
+    #     )["highest_order"]
+    #
+    #     fields.append({
+    #         "name": "",
+    #         "value": f"**Stat Type:** {stat_type}",
+    #         "inline": False
+    #     })
+    #
+    #     fields.append({
+    #         "name": "Game Details",
+    #         "value": f"{previous_message}"
+    #                  f"**Event:**  {market_data.get('additional_data').get('game_title')}\n"
+    #                  f"**Date:** {start_time}\n",
+    #     })
+    #
+    #     if stat_type == "Moneyline" or stat_type == "Spread":
+    #         pass
+    #     else:
+    #         fields.append({
+    #             "name": "Liquidity Quick Summary",
+    #             "value": f"```\nTotal Over: ${over_data.get('total_liquidity', 0)} "
+    #                      f"\nCost Avg Odds: {DiscordBot.format_odds(over_data.get('cost_avg_odds', 0))}\n\n"
+    #                      f"Total Under: ${under_data.get('total_liquidity', 0)}"
+    #                      f"\nCost Avg Odds: {DiscordBot.format_odds(under_data.get('cost_avg_odds', 0))}\n\n"
+    #                      f"Highest Order: ${highest.get('liquidity_left', 0)} [{highest.get('side').title()}]\n"
+    #                      f"Highest Order Odds: {DiscordBot.format_odds(highest.get('american_price', 0))}\n```",
+    #             "inline": False
+    #         })
+    #
+    #     link_fields = [
+    #         {
+    #             "name": f"{order_data.get('side').title()} {market_data.get('additional_data').get('line')} Link",
+    #             "value": f"**↠** [Mobile]({order_data.get('mobile_link')}) | [Desktop]({order_data.get('desktop_link')})",
+    #             "inline": False
+    #         }
+    #         for side, data in market_data.get("liquidity", {}).items()
+    #         if (order_data := data.get("highest_order"))
+    #     ]
+    #
+    #     fields.extend(link_fields)
+    #
+    #     return {
+    #         "title": main_title,
+    #         "color": 0x5D3A9B,
+    #         "author": {
+    #             "name": f"Novig Bot",
+    #         },
+    #         "footer": {
+    #             "text": "V2.0.0\n"
+    #                     "Powered by BettorOdds"
+    #         },
+    #         "fields": fields,
+    #         "timestamp": datetime.now(timezone.utc).isoformat()
+    #     }
+
     def create_notification(self, main_title, start_time, market_data, market_change, stat_type):
         fields = []
 
         previous_message = "*(Play was sent previously but market moved +/- 1500)*\n" if market_change else ""
 
-        over_data = market_data.get("liquidity", {}).get("over", {}).get("highest_order", {})
-        under_data = market_data.get("liquidity", {}).get("under", {}).get("highest_order", {})
+        liquidity = market_data.get("liquidity", {})
+        sides = list(liquidity.keys())
 
+        # Moneyline / Spread
+        if stat_type in ("Moneyline", "Spread"):
+            side_1_name, side_2_name = sides[0], sides[1]
+            side_1_data = liquidity.get(side_1_name, {}).get("highest_order", {})
+            side_2_data = liquidity.get(side_2_name, {}).get("highest_order", {})
+        # Totals (always over/under)
+        else:
+            side_1_name, side_2_name = "over", "under"
+            side_1_data = liquidity.get("over", {}).get("highest_order", {})
+            side_2_data = liquidity.get("under", {}).get("highest_order", {})
+
+        # Find the overall highest order
         highest = max(
-            market_data["liquidity"].values(),
+            liquidity.values(),
             key=lambda x: x["highest_order"]["total_liquidity"]
         )["highest_order"]
 
@@ -111,28 +192,34 @@ class DiscordBot:
         fields.append({
             "name": "Game Details",
             "value": f"{previous_message}"
-                     f"**Event:**  {market_data.get('additional_data').get('game_title')}\n"
+                     f"**Event:**  {market_data.get('additional_data', {}).get('game_title')}\n"
                      f"**Date:** {start_time}\n",
         })
 
+       # Liquidity summary depends on stat_type
         fields.append({
             "name": "Liquidity Quick Summary",
-            "value": f"```\nTotal Over: ${over_data.get('total_liquidity', 0)} "
-                     f"\nCost Avg Odds: {DiscordBot.format_odds(over_data.get('cost_avg_odds', 0))}\n\n"
-                     f"Total Under: ${under_data.get('total_liquidity', 0)}"
-                     f"\nCost Avg Odds: {DiscordBot.format_odds(under_data.get('cost_avg_odds', 0))}\n\n"
+            "value": f"```\n{side_1_name.upper() if stat_type in ['Moneyline', 'Spread'] else side_1_name.title()}: ${side_1_data.get('total_liquidity', 0)} "
+                     f"\nCost Avg Odds: {DiscordBot.format_odds(side_1_data.get('cost_avg_odds', 0))}\n\n"
+                     f"{side_2_name.upper() if stat_type in ['Moneyline', 'Spread'] else side_2_name.title()}: ${side_2_data.get('total_liquidity', 0)}"
+                     f"\nCost Avg Odds: {DiscordBot.format_odds(side_2_data.get('cost_avg_odds', 0))}\n\n"
                      f"Highest Order: ${highest.get('liquidity_left', 0)} [{highest.get('side').title()}]\n"
                      f"Highest Order Odds: {DiscordBot.format_odds(highest.get('american_price', 0))}\n```",
             "inline": False
         })
 
+        # Links for each side
         link_fields = [
             {
-                "name": f"{order_data.get('side').title()} {market_data.get('additional_data').get('line')} Link",
+                "name": (
+                    f"{order_data.get('side').upper()} Link"
+                    if stat_type in ("Moneyline", "Spread")
+                    else f"{order_data.get('side').title()} {market_data.get('additional_data', {}).get('line')} Link"
+                ),
                 "value": f"**↠** [Mobile]({order_data.get('mobile_link')}) | [Desktop]({order_data.get('desktop_link')})",
                 "inline": False
             }
-            for side, data in market_data.get("liquidity", {}).items()
+            for side, data in liquidity.items()
             if (order_data := data.get("highest_order"))
         ]
 
@@ -141,13 +228,10 @@ class DiscordBot:
         return {
             "title": main_title,
             "color": 0x5D3A9B,
-            "author": {
-                "name": f"Novig Bot",
-            },
-            "footer": {
-                "text": "V2.0.0\n"
-                        "Powered by BettorOdds"
-            },
+            "author": {"name": "Novig Bot"},
+            "footer": {"text": "V2.0.1\nPowered by BettorOdds"},
             "fields": fields,
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
+
+
