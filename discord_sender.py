@@ -92,7 +92,7 @@ class DiscordBot:
     def create_notification(self, main_title, start_time, market_data, market_change, stat_type):
         fields = []
 
-        previous_message = "*(Play was sent previously but market moved +/- 1000)*\n" if market_change else ""
+        previous_message = "*(Play was sent previously but market moved +/- 1500)*\n" if market_change else ""
 
         over_data = market_data.get("liquidity", {}).get("over", {}).get("highest_order", {})
         under_data = market_data.get("liquidity", {}).get("under", {}).get("highest_order", {})
