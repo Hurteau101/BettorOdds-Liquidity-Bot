@@ -40,14 +40,16 @@ class DiscordBot:
 
         bet_info = data.get("additional_data", {}).get("bet_info")
         if stat_type == "Spread":
+            # bet_info = stat_type
             team_split = bet_info.split(" ")
-            team_name = team_split[0]
-            renamed_team = mapper.get(team_name.upper(), team_name)
-            bet_info = f"{renamed_team} ({' '.join(team_split[1:])})"
+            # team_name = team_split[0]
+            # renamed_team = mapper.get(team_name.upper(), team_name)
+            bet_info = f"{stat_type} {' '.join(team_split[1:])}"
         elif stat_type == "Moneyline":
-            team_name = bet_info
-            renamed_team = mapper.get(team_name.upper(), team_name)
-            bet_info = renamed_team
+            # team_name = bet_info
+            # renamed_team = mapper.get(team_name.upper(), team_name)
+            # bet_info = renamed_team
+            bet_info = stat_type
         elif stat_type == "Total":
             bet_info = str(line)
         elif stat_type == "Team Total":
