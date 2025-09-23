@@ -16,6 +16,7 @@ celery_app.conf.beat_schedule = {
     "send_notifications": {
         "task": "celery_notification.notify_user",
         "schedule": timedelta(seconds=30),
+        "options": {"expires": 60},
     },
 }
 
