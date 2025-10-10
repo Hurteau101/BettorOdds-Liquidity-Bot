@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import redis
 from discord_sender import DiscordBot
 
@@ -36,11 +36,14 @@ class ProcessManager:
             start_date = player.get("additional_data", {}).get("game_start_time")
             start_date_dt = datetime.fromisoformat(start_date.replace("Z", "+00:00"))
 
+            # Add 30 minutes buffer to expiration time due to Novig keeping data for a bit longer after start time.
+            start_date_dt_plus_buffer = start_date_dt + timedelta(minutes=30)
+
             player_liquidity_difference = float(player.get("liqudity_difference", 0))
 
             if redis_current_diff is None:
                 # New player
-                self.store_player(pipeline, player_key, player_liquidity_difference, start_date_dt)
+                self.store_player(pipeline, player_key, player_liquidity_difference, start_date_dt_plus_buffer)
                 self.discord_bot.discord_message(player, market_changed=False)
 
             elif abs(float(redis_current_diff) - player_liquidity_difference) >= self.difference_amount:
