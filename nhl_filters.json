@@ -1,0 +1,43 @@
+{
+  "NHL": {
+    "NHL_Mainlines": [
+      {
+        "raw_name": "spread",
+        "display_name": "Spread",
+        "active": true
+      },
+      {
+        "raw_name": "total",
+        "display_name": "Total",
+        "active": true
+      }
+    ],
+    "NHL_Props": [
+      {
+        "raw_name": "player_goals",
+        "display_name": "Goals",
+        "active": true
+      },
+      {
+        "raw_name": "assists",
+        "display_name": "Assists",
+        "active": true
+      },
+      {
+        "raw_name": "points",
+        "display_name": "Points",
+        "active": true
+      },
+      {
+        "raw_name": "shots_on_goal",
+        "display_name": "Shots on Goal",
+        "active": true
+      },
+      {
+        "raw_name": "saves",
+        "display_name": "Saves",
+        "active": true
+      }
+    ]
+  }
+}

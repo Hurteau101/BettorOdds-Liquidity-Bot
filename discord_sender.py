@@ -18,6 +18,8 @@ class DiscordBot:
         MAPPER = {
             "nfl": os.getenv("DISCORD_WEBHOOK_URL_NFL"),
             "ncaaf": os.getenv("DISCORD_WEBHOOK_URL_NCAAF"),
+            "nba": os.getenv("DISCORD_WEBHOOK_URL_NBA"),
+            "nhl": os.getenv("DISCORD_WEBHOOK_URL_NHL"),
         }
 
         if league.lower() not in MAPPER:

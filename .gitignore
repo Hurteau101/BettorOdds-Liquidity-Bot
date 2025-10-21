@@ -6,3 +6,4 @@ __pycache__/
 dump.rdb
 .env
 .idea/
+internal_docs.md

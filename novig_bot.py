@@ -32,24 +32,65 @@ if __name__ == "__main__":
     import asyncio
 
     async def main():
-        with open("nfl_filters.json", "r") as f:
-            nfl_filters = json.load(f)
-        with open("ncaaf_filters.json", "r") as f:
-            ncaaf_filters = json.load(f)
+        # with open("nfl_filters.json", "r") as f:
+        #     nfl_filters = json.load(f)
+        # with open("ncaaf_filters.json", "r") as f:
+        #     ncaaf_filters = json.load(f)
+        #
+        # sender_nfl = NovigSender(filter_data=nfl_filters, difference_amount=3000)
+        # sender_ncaaf = NovigSender(filter_data=ncaaf_filters, difference_amount=2000)
+        #
+        # nfl_data, ncaaf_data = await asyncio.gather(
+        #     sender_nfl.runner(),
+        #     sender_ncaaf.runner()
+        # )
+        #
+        # nfl_manager = ProcessManager(redis_database=8, difference_amount=1500, league="NFL")
+        # ncaaf_manager = ProcessManager(redis_database=9, difference_amount=1500, league="NCAAF")
+        #
+        # nfl_manager.manger(nfl_data["NFL"], "NFL")
+        # ncaaf_manager.manger(ncaaf_data["NCAAF"], "NCAAF")
 
-        sender_nfl = NovigSender(filter_data=nfl_filters, difference_amount=3000)
-        sender_ncaaf = NovigSender(filter_data=ncaaf_filters, difference_amount=2000)
+        with open("nhl_filters.json", "r") as f:
+            nhl_filters = json.load(f)
+            nhl_mainlines = {"NHL": nhl_filters.get("NHL", {}).get("NHL_Mainlines")}
+            nhl_props = {"NHL": nhl_filters.get("NHL", {}).get("NHL_Props")}
 
-        nfl_data, ncaaf_data = await asyncio.gather(
-            sender_nfl.runner(),
-            sender_ncaaf.runner()
+
+        sender_nhl_mainline = NovigSender(filter_data=nhl_mainlines, difference_amount=1000)
+        sender_nhl_props = NovigSender(filter_data=nhl_props, difference_amount=1000)
+
+        nhl_mainline_data, nhl_props_data = await asyncio.gather(
+            sender_nhl_mainline.runner(),
+            sender_nhl_props.runner(),
         )
 
-        nfl_manager = ProcessManager(redis_database=8, difference_amount=1500, league="NFL")
-        ncaaf_manager = ProcessManager(redis_database=9, difference_amount=1500, league="NCAAF")
+        nhl_manager = ProcessManager(redis_database=11, difference_amount=1500, league="NHL")
 
-        nfl_manager.manger(nfl_data["NFL"], "NFL")
-        ncaaf_manager.manger(ncaaf_data["NCAAF"], "NCAAF")
+        nhl_manager.manger(nhl_mainline_data["NHL"], "NHL")
+        nhl_manager.manger(nhl_props_data["NHL"], "NHL")
+
+        # with open("nba_filters.json", "r") as f:
+        #     nba_data = json.load(f)
+        #     nba_mainlines = {"NBA": nba_data.get("NBA", {}).get("NBA_Mainlines")}
+        #     nba_props = {"NBA": nba_data.get("NBA", {}).get("NBA_Props")}
+        #
+        #
+        #
+        #
+        # sender_nba_mainline = NovigSender(filter_data=nba_mainlines, difference_amount=5000)
+        # sender_nba_props = NovigSender(filter_data=nba_props, difference_amount=3000)
+        #
+        # nba_mainline_data, nba_props_data = await asyncio.gather(
+        #     sender_nba_mainline.runner(),
+        #     sender_nba_props.runner(),
+        # )
+        #
+        # nba_manager = ProcessManager(redis_database=10, difference_amount=1500, league="NBA")
+        #
+        # nba_manager.manger(nba_mainline_data["NBA"], "NBA")
+        # nba_manager.manger(nba_props_data["NBA"], "NBA")
+
 
     asyncio.run(main())
 
