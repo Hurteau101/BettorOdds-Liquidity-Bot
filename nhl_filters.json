@@ -4,6 +4,11 @@
       {
         "raw_name": "spread",
         "display_name": "Spread",
+        "active": false
+      },
+      {
+        "raw_name": "moneyline",
+        "display_name": "moneyline",
         "active": true
       },
       {
