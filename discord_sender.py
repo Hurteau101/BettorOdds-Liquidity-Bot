@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 from discordwebhook import Discord
-from team_mapper import nfl_team_map, ncaa_team_map
+from team_mapper import nfl_team_map, ncaa_team_map, cbb_team_map
 
 
 class DiscordBot:
@@ -20,6 +20,7 @@ class DiscordBot:
             "ncaaf": os.getenv("DISCORD_WEBHOOK_URL_NCAAF"),
             "nba": os.getenv("DISCORD_WEBHOOK_URL_NBA"),
             "nhl": os.getenv("DISCORD_WEBHOOK_URL_NHL"),
+            "ncaab": os.getenv("DISCORD_WEBHOOK_URL_NCAAB"),
         }
 
         if league.lower() not in MAPPER:
@@ -36,6 +37,7 @@ class DiscordBot:
         league_mapper = {
             "NFL": nfl_team_map,
             "NCAAF": ncaa_team_map,
+            "NCAAB": cbb_team_map,
         }
 
         mapper = league_mapper.get(self.league.upper(), {})

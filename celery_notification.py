@@ -24,8 +24,12 @@ celery_app.conf.beat_schedule = {
 async def run_notify():
     with open("nfl_filters.json", "r") as f:
         nfl_filters = json.load(f)
+
     with open("ncaaf_filters.json", "r") as f:
         ncaaf_filters = json.load(f)
+
+    with open("ncaab.json", "r") as f:
+        ncaab_filters = json.load(f)
 
     with open("nba_filters.json", "r") as f:
         nba_data = json.load(f)
@@ -45,15 +49,19 @@ async def run_notify():
     sender_nhl_props = NovigSender(filter_data=nhl_props, difference_amount=3000)
 
     sender_nfl = NovigSender(filter_data=nfl_filters, difference_amount=3000)
+
     sender_ncaaf = NovigSender(filter_data=ncaaf_filters, difference_amount=4000)
 
-    nfl_data, ncaaf_data, nba_mainline_data, nba_props_data, nhl_mainline_data, nhl_props_data = await asyncio.gather(
+    sender_ncaab = NovigSender(filter_data=ncaab_filters, difference_amount=4000)
+
+    nfl_data, ncaaf_data, nba_mainline_data, nba_props_data, nhl_mainline_data, nhl_props_data, ncaab_mainline_data = await asyncio.gather(
         sender_nfl.runner(),
         sender_ncaaf.runner(),
         sender_nba_mainline.runner(),
         sender_nba_props.runner(),
         sender_nhl_mainline.runner(),
         sender_nhl_props.runner(),
+        sender_ncaab.runner(),
     )
 
     nfl_manager = ProcessManager(redis_database=8, difference_amount=1500, league="NFL")
@@ -71,6 +79,9 @@ async def run_notify():
 
     nhl_manager.manger(nhl_mainline_data["NHL"], "NHL")
     nhl_manager.manger(nhl_props_data["NHL"], "NHL")
+
+    ncaab_manager = ProcessManager(redis_database=12, difference_amount=1500, league="NCAAB")
+    ncaab_manager.manger(ncaab_mainline_data["NCAAB"], "NCAAB")
 
 @celery_app.task(name="celery_notification.notify_user")
 def notify_user():
