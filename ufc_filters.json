@@ -1,0 +1,19 @@
+{
+  "UFC": {
+    "UFC_Mainlines": [
+
+      {
+        "raw_name": "money",
+        "display_name": "moneyline",
+        "active": true
+      }
+    ],
+    "UFC_Alternates": [
+      {
+        "raw_name": "total",
+        "display_name": "Total Rounds",
+        "active": true
+      }
+    ]
+  }
+}

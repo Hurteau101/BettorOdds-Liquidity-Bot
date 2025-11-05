@@ -41,6 +41,10 @@ async def run_notify():
         nhl_mainlines = {"NHL": nhl_filters.get("NHL", {}).get("NHL_Mainlines")}
         nhl_props = {"NHL": nhl_filters.get("NHL", {}).get("NHL_Props")}
 
+    with open("ufc_filters.json", "r") as f:
+        ufc_filters = json.load(f)
+        ufc_mainlines = {"UFC": ufc_filters.get("UFC", {}).get("UFC_Mainlines")}
+        ufc_alternates = {"UFC": ufc_filters.get("UFC", {}).get("UFC_Alternates")}
 
     sender_nba_mainline = NovigSender(filter_data=nba_mainlines, difference_amount=5000)
     sender_nba_props = NovigSender(filter_data=nba_props, difference_amount=3000)
@@ -54,7 +58,10 @@ async def run_notify():
 
     sender_ncaab = NovigSender(filter_data=ncaab_filters, difference_amount=4000)
 
-    nfl_data, ncaaf_data, nba_mainline_data, nba_props_data, nhl_mainline_data, nhl_props_data, ncaab_mainline_data = await asyncio.gather(
+    sender_ufc_mainlines = NovigSender(filter_data=ufc_mainlines, difference_amount=7000)
+    sender_ufc_alternates = NovigSender(filter_data=ufc_alternates, difference_amount=5000)
+
+    nfl_data, ncaaf_data, nba_mainline_data, nba_props_data, nhl_mainline_data, nhl_props_data, ncaab_mainline_data, ufc_mainline_data, ufc_alternate_data = await asyncio.gather(
         sender_nfl.runner(),
         sender_ncaaf.runner(),
         sender_nba_mainline.runner(),
@@ -62,6 +69,8 @@ async def run_notify():
         sender_nhl_mainline.runner(),
         sender_nhl_props.runner(),
         sender_ncaab.runner(),
+        sender_ufc_mainlines.runner(),
+        sender_ufc_alternates.runner(),
     )
 
     nfl_manager = ProcessManager(redis_database=8, difference_amount=1500, league="NFL")
@@ -82,6 +91,10 @@ async def run_notify():
 
     ncaab_manager = ProcessManager(redis_database=12, difference_amount=1500, league="NCAAB")
     ncaab_manager.manger(ncaab_mainline_data["NCAAB"], "NCAAB")
+
+    ufc_manager = ProcessManager(redis_database=13, difference_amount=1500, league="UFC")
+    ufc_manager.manger(ufc_mainline_data["UFC"], "UFC")
+    ufc_manager.manger(ufc_alternate_data["UFC"], "UFC")
 
 @celery_app.task(name="celery_notification.notify_user")
 def notify_user():

@@ -51,6 +51,10 @@ if __name__ == "__main__":
             nhl_mainlines = {"NHL": nhl_filters.get("NHL", {}).get("NHL_Mainlines")}
             nhl_props = {"NHL": nhl_filters.get("NHL", {}).get("NHL_Props")}
 
+        with open("ufc_filters.json", "r") as f:
+            ufc_filters = json.load(f)
+            ufc_mainlines = {"UFC": ufc_filters.get("UFC", {}).get("UFC_Mainlines")}
+            ufc_alternates = {"UFC": ufc_filters.get("UFC", {}).get("UFC_Alternates")}
 
 
 
@@ -66,23 +70,34 @@ if __name__ == "__main__":
 
         sender_ncaab = NovigSender(filter_data=ncaab_filters, difference_amount=4000)
 
-        nfl_data, ncaaf_data, nba_mainline_data, nba_props_data, nhl_mainline_data, nhl_props_data, ncaab_mainline_data = await asyncio.gather(
-            sender_nfl.runner(),
-            sender_ncaaf.runner(),
-            sender_nba_mainline.runner(),
-            sender_nba_props.runner(),
-            sender_nhl_mainline.runner(),
-            sender_nhl_props.runner(),
-            sender_ncaab.runner(),
+        sender_ufc_mainlines = NovigSender(filter_data=ufc_mainlines, difference_amount=1000)
+        sender_ufc_alternates = NovigSender(filter_data=ufc_alternates, difference_amount=1000)
+
+
+        # nfl_data, ncaaf_data, nba_mainline_data, nba_props_data, nhl_mainline_data, nhl_props_data, ncaab_mainline_data = await asyncio.gather(
+        #     sender_nfl.runner(),
+        #     sender_ncaaf.runner(),
+        #     sender_nba_mainline.runner(),
+        #     sender_nba_props.runner(),
+        #     sender_nhl_mainline.runner(),
+        #     sender_nhl_props.runner(),
+        #     sender_ncaab.runner(),
+        # )
+
+
+
+        ufc_data_mainline, ufc_data_alternates = await asyncio.gather(
+            sender_ufc_mainlines.runner(),
+            sender_ufc_alternates.runner(),
         )
 
-        ncaab_manager = ProcessManager(redis_database=12, difference_amount=1500, league="NCAAB")
-        ncaab_manager.manger(ncaab_mainline_data["NCAAB"], "NCAAB")
+        ufc_manager = ProcessManager(redis_database=13, difference_amount=1500, league="UFC")
+        ufc_manager.manger(ufc_data_mainline["UFC"], "UFC")
+        ufc_manager.manger(ufc_data_alternates["UFC"], "UFC")
 
+        # ncaab_manager = ProcessManager(redis_database=12, difference_amount=1500, league="NCAAB")
+        # ncaab_manager.manger(ncaab_mainline_data["NCAAB"], "NCAAB")
 
-
-
-        #
         # nfl_manager = ProcessManager(redis_database=8, difference_amount=1500, league="NFL")
         # ncaaf_manager = ProcessManager(redis_database=9, difference_amount=1500, league="NCAAF")
         #

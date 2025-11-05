@@ -21,6 +21,7 @@ class DiscordBot:
             "nba": os.getenv("DISCORD_WEBHOOK_URL_NBA"),
             "nhl": os.getenv("DISCORD_WEBHOOK_URL_NHL"),
             "ncaab": os.getenv("DISCORD_WEBHOOK_URL_NCAAB"),
+            "ufc": os.getenv("DISCORD_WEBHOOK_URL_UFC"),
         }
 
         if league.lower() not in MAPPER:
@@ -54,7 +55,7 @@ class DiscordBot:
             # renamed_team = mapper.get(team_name.upper(), team_name)
             # bet_info = renamed_team
             bet_info = stat_type
-        elif stat_type == "Total":
+        elif stat_type == "Total" or stat_type == "Total Rounds":
             bet_info = str(line)
         elif stat_type == "Team Total":
             team_split = bet_info.split(" ")
