@@ -86,14 +86,14 @@ if __name__ == "__main__":
 
 
 
-        ufc_data_mainline, ufc_data_alternates = await asyncio.gather(
-            sender_ufc_mainlines.runner(),
-            sender_ufc_alternates.runner(),
+        nhl_mainline_data, nhl_props_data = await asyncio.gather(
+            sender_nhl_mainline.runner(),
+            sender_nhl_props.runner(),
         )
 
-        ufc_manager = ProcessManager(redis_database=13, difference_amount=1500, league="UFC")
-        ufc_manager.manger(ufc_data_mainline["UFC"], "UFC")
-        ufc_manager.manger(ufc_data_alternates["UFC"], "UFC")
+        # ufc_manager = ProcessManager(redis_database=13, difference_amount=1500, league="UFC")
+        # ufc_manager.manger(ufc_data_mainline["UFC"], "UFC")
+        # ufc_manager.manger(ufc_data_alternates["UFC"], "UFC")
 
         # ncaab_manager = ProcessManager(redis_database=12, difference_amount=1500, league="NCAAB")
         # ncaab_manager.manger(ncaab_mainline_data["NCAAB"], "NCAAB")
@@ -103,7 +103,7 @@ if __name__ == "__main__":
         #
         # nba_manager = ProcessManager(redis_database=10, difference_amount=1500, league="NBA")
         #
-        # nhl_manager = ProcessManager(redis_database=11, difference_amount=1500, league="NHL")
+        nhl_manager = ProcessManager(redis_database=11, difference_amount=1500, league="NHL")
         #
         # nfl_manager.manger(nfl_data["NFL"], "NFL")
         # ncaaf_manager.manger(ncaaf_data["NCAAF"], "NCAAF")
@@ -111,8 +111,8 @@ if __name__ == "__main__":
         # nba_manager.manger(nba_mainline_data["NBA"], "NBA")
         # nba_manager.manger(nba_props_data["NBA"], "NBA")
         #
-        # nhl_manager.manger(nhl_mainline_data["NHL"], "NHL")
-        # nhl_manager.manger(nhl_props_data["NHL"], "NHL")
+        nhl_manager.manger(nhl_mainline_data["NHL"], "NHL")
+        nhl_manager.manger(nhl_props_data["NHL"], "NHL")
 
 
         # with open("nfl_filters.json", "r") as f:
