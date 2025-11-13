@@ -23,7 +23,9 @@ celery_app.conf.beat_schedule = {
 
 async def run_notify():
     with open("nfl_filters.json", "r") as f:
-        nfl_filters = json.load(f)
+        nfl_data = json.load(f)
+        nfl_mainlines = {"NFL": nfl_data.get("NFL", {}).get("NFL_Mainlines")}
+        nfl_props = {"NFL": nfl_data.get("NFL", {}).get("NFL_Props")}
 
     with open("ncaaf_filters.json", "r") as f:
         ncaaf_filters = json.load(f)
@@ -52,7 +54,8 @@ async def run_notify():
     sender_nhl_mainline = NovigSender(filter_data=nhl_mainlines, difference_amount=5000)
     sender_nhl_props = NovigSender(filter_data=nhl_props, difference_amount=3000)
 
-    sender_nfl = NovigSender(filter_data=nfl_filters, difference_amount=3000)
+    sender_nfl_mainline = NovigSender(filter_data=nfl_mainlines, difference_amount=3000)
+    sender_nfl_props = NovigSender(filter_data=nfl_props, difference_amount=3000)
 
     sender_ncaaf = NovigSender(filter_data=ncaaf_filters, difference_amount=4000)
 
@@ -61,8 +64,9 @@ async def run_notify():
     sender_ufc_mainlines = NovigSender(filter_data=ufc_mainlines, difference_amount=7000)
     sender_ufc_alternates = NovigSender(filter_data=ufc_alternates, difference_amount=5000)
 
-    nfl_data, ncaaf_data, nba_mainline_data, nba_props_data, nhl_mainline_data, nhl_props_data, ncaab_mainline_data, ufc_mainline_data, ufc_alternate_data = await asyncio.gather(
-        sender_nfl.runner(),
+    nfl_mainline_data, nfl_props_data, ncaaf_data, nba_mainline_data, nba_props_data, nhl_mainline_data, nhl_props_data, ncaab_mainline_data, ufc_mainline_data, ufc_alternate_data = await asyncio.gather(
+        sender_nfl_mainline.runner(),
+        sender_nfl_props.runner(),
         sender_ncaaf.runner(),
         sender_nba_mainline.runner(),
         sender_nba_props.runner(),
@@ -80,7 +84,9 @@ async def run_notify():
 
     nhl_manager = ProcessManager(redis_database=11, difference_amount=1500, league="NHL")
 
-    nfl_manager.manger(nfl_data["NFL"], "NFL")
+    nfl_manager.manger(nfl_mainline_data["NFL"], "NFL")
+    nfl_manager.manger(nfl_props_data["NFL"], "NFL")
+
     ncaaf_manager.manger(ncaaf_data["NCAAF"], "NCAAF")
 
     nba_manager.manger(nba_mainline_data["NBA"], "NBA")
