@@ -45,11 +45,19 @@ class DiscordBot:
 
         bet_info = data.get("additional_data", {}).get("bet_info")
         if stat_type == "Spread":
+            print(bet_info)
             # bet_info = stat_type
             team_split = bet_info.split(" ")
+            if len(team_split) <= 2:
+                spread_value = team_split[1]
+            else:
+                spread_value = team_split[-1]
+
             # team_name = team_split[0]
             # renamed_team = mapper.get(team_name.upper(), team_name)
-            bet_info = f"{stat_type} {' '.join(team_split[1:])}"
+            # bet_info = f"{stat_type} {' '.join(team_split[1:])}"
+            bet_info = f"{stat_type} {spread_value}"
+
         elif stat_type == "Moneyline":
             # team_name = bet_info
             # renamed_team = mapper.get(team_name.upper(), team_name)
@@ -183,6 +191,8 @@ class DiscordBot:
             side_1_name, side_2_name = "over", "under"
             side_1_data = liquidity.get("over", {}).get("highest_order", {})
             side_2_data = liquidity.get("under", {}).get("highest_order", {})
+
+        print(stat_type)
 
         # Find the overall highest order
         highest = max(

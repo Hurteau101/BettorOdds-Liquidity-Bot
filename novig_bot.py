@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
         sender_ncaaf = NovigSender(filter_data=ncaaf_filters, difference_amount=4000)
 
-        sender_ncaab = NovigSender(filter_data=ncaab_filters, difference_amount=4000)
+        sender_ncaab = NovigSender(filter_data=ncaab_filters, difference_amount=800)
 
         sender_ufc_mainlines = NovigSender(filter_data=ufc_mainlines, difference_amount=1000)
         sender_ufc_alternates = NovigSender(filter_data=ufc_alternates, difference_amount=1000)
@@ -89,9 +89,8 @@ if __name__ == "__main__":
 
 
 
-        nfl_mainlines, nfl_props = await asyncio.gather(
-            sender_nfl_mainline.runner(),
-            sender_nfl_props.runner(),
+        ncaab_mainline_data, = await asyncio.gather(
+            sender_ncaab.runner(),
         )
 
         # nhl_mainline_data, nhl_props_data = await asyncio.gather(
@@ -104,8 +103,8 @@ if __name__ == "__main__":
         # ufc_manager.manger(ufc_data_mainline["UFC"], "UFC")
         # ufc_manager.manger(ufc_data_alternates["UFC"], "UFC")
 
-        # ncaab_manager = ProcessManager(redis_database=12, difference_amount=1500, league="NCAAB")
-        # ncaab_manager.manger(ncaab_mainline_data["NCAAB"], "NCAAB")
+        ncaab_manager = ProcessManager(redis_database=12, difference_amount=1500, league="NCAAB")
+        ncaab_manager.manger(ncaab_mainline_data["NCAAB"], "NCAAB")
 
         # nfl_manager = ProcessManager(redis_database=8, difference_amount=1500, league="NFL")
         # ncaaf_manager = ProcessManager(redis_database=9, difference_amount=1500, league="NCAAF")
@@ -123,9 +122,9 @@ if __name__ == "__main__":
         # nhl_manager.manger(nhl_mainline_data["NHL"], "NHL")
         # nhl_manager.manger(nhl_props_data["NHL"], "NHL")
 
-        nfl_manger = ProcessManager(redis_database=8, difference_amount=1500, league="NFL")
-        nfl_manger.manger(nfl_mainlines["NFL"], "NFL")
-        nfl_manger.manger(nfl_props["NFL"], "NFL")
+        # nfl_manger = ProcessManager(redis_database=8, difference_amount=1500, league="NFL")
+        # nfl_manger.manger(nfl_mainlines["NFL"], "NFL")
+        # nfl_manger.manger(nfl_props["NFL"], "NFL")
 
 
         # with open("nfl_filters.json", "r") as f:
