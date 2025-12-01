@@ -5,7 +5,7 @@
       {
         "raw_name": "money",
         "display_name": "Moneyline",
-        "active": true
+        "active": false
       },
       {
         "raw_name": "total",
