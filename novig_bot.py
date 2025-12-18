@@ -87,6 +87,7 @@ if __name__ == "__main__":
             sender_ufc_alternates.runner(),
         )
 
+
         nfl_manager = ProcessManager(redis_database=8, difference_amount=1500, league="NFL")
         ncaaf_manager = ProcessManager(redis_database=9, difference_amount=1500, league="NCAAF")
 
