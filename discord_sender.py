@@ -192,7 +192,6 @@ class DiscordBot:
             side_1_data = liquidity.get("over", {}).get("highest_order", {})
             side_2_data = liquidity.get("under", {}).get("highest_order", {})
 
-        print(stat_type)
 
         # Find the overall highest order
         highest = max(
