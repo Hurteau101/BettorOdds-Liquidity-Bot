@@ -41,13 +41,19 @@ class DiscordBot:
             "NCAAB": cbb_team_map,
         }
 
+
         mapper = league_mapper.get(self.league.upper(), {})
 
         bet_info = data.get("additional_data", {}).get("bet_info")
         if stat_type == "Spread":
-            print(bet_info)
+            liquidity = data.get("liquidity", {})
+            highest = max(
+                liquidity.values(),
+                key=lambda x: x["highest_order"]["total_liquidity"]
+            )["highest_order"]
+
             # bet_info = stat_type
-            team_split = bet_info.split(" ")
+            team_split = highest.get('side').split(" ")
             if len(team_split) <= 2:
                 spread_value = team_split[1]
             else:
@@ -57,6 +63,7 @@ class DiscordBot:
             # renamed_team = mapper.get(team_name.upper(), team_name)
             # bet_info = f"{stat_type} {' '.join(team_split[1:])}"
             bet_info = f"{stat_type} {spread_value}"
+
 
         elif stat_type == "Moneyline":
             # team_name = bet_info
