@@ -17,8 +17,9 @@ class NovigSender:
         }
 
         novig = Novig(filters=self.filters, filter_amount_dict=total_difference_filter)
-        return await novig.run()
-
+        data = await novig.run()
+        print(data)
+        return data
 
 
 if __name__ == "__main__":
@@ -40,8 +41,16 @@ if __name__ == "__main__":
         # with open("ncaaf_filters.json", "r") as f:
         #     ncaaf_filters = json.load(f)
 
-        with open("ncaab.json", "r") as f:
-            ncaab_filters = json.load(f)
+        # with open("ncaab.json", "r") as f:
+        #     ncaab_filters = json.load(f)
+
+
+        with open("mlb_filters.json", "r") as f:
+            mlb_data = json.load(f)
+            mlb_mainlines = {"MLB": mlb_data.get("MLB", {}).get("MLB_Mainlines")}
+            mlb_props = {"MLB": mlb_data.get("MLB", {}).get("MLB_Props")}
+
+
 
         # with open("nba_filters.json", "r") as f:
         #     nba_data = json.load(f)
@@ -60,6 +69,21 @@ if __name__ == "__main__":
 
         # sender_nba_mainline = NovigSender(filter_data=nba_mainlines, difference_amount=5000)
         # sender_nba_props = NovigSender(filter_data=nba_props, difference_amount=3000)
+
+        sender_mlb_mainline = NovigSender(filter_data=mlb_mainlines, difference_amount=5000)
+        sender_mlb_props = NovigSender(filter_data=mlb_props, difference_amount=3000)
+
+
+        mlb_mainline_data, mlb_props_data = await asyncio.gather(
+            sender_mlb_mainline.runner(),
+            sender_mlb_props.runner(),
+        )
+
+        mlb_manager = ProcessManager(redis_database=14, difference_amount=1500, league="MLB")
+
+        mlb_manager.manger(mlb_mainline_data["MLB"], "MLB")
+        mlb_manager.manger(mlb_props_data["MLB"], "MLB")
+
         #
         # sender_nhl_mainline = NovigSender(filter_data=nhl_mainlines, difference_amount=5000)
         # sender_nhl_props = NovigSender(filter_data=nhl_props, difference_amount=3000)
@@ -69,7 +93,7 @@ if __name__ == "__main__":
         #
         # sender_ncaaf = NovigSender(filter_data=ncaaf_filters, difference_amount=4000)
 
-        sender_ncaab = NovigSender(filter_data=ncaab_filters, difference_amount=100)
+        # sender_ncaab = NovigSender(filter_data=ncaab_filters, difference_amount=100)
 
         # sender_ufc_mainlines = NovigSender(filter_data=ufc_mainlines, difference_amount=7000)
         # sender_ufc_alternates = NovigSender(filter_data=ufc_alternates, difference_amount=5000)
@@ -87,9 +111,9 @@ if __name__ == "__main__":
         #     sender_ufc_alternates.runner(),
         # )
 
-        ncaab_mainline_data, = await asyncio.gather(
-            sender_ncaab.runner()
-        )
+        # ncaab_mainline_data, = await asyncio.gather(
+        #     sender_ncaab.runner()
+        # )
 
 
 
@@ -111,8 +135,8 @@ if __name__ == "__main__":
         # nhl_manager.manger(nhl_mainline_data["NHL"], "NHL")
         # nhl_manager.manger(nhl_props_data["NHL"], "NHL")
 
-        ncaab_manager = ProcessManager(redis_database=12, difference_amount=1500, league="NCAAB")
-        ncaab_manager.manger(ncaab_mainline_data["NCAAB"], "NCAAB")
+        # ncaab_manager = ProcessManager(redis_database=12, difference_amount=1500, league="NCAAB")
+        # ncaab_manager.manger(ncaab_mainline_data["NCAAB"], "NCAAB")
 
         # ufc_manager = ProcessManager(redis_database=13, difference_amount=1500, league="UFC")
         # ufc_manager.manger(ufc_mainline_data["UFC"], "UFC")

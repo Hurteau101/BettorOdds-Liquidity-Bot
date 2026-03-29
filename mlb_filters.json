@@ -1,0 +1,28 @@
+{
+  "MLB": {
+    "MLB_Mainlines": [
+      {
+        "raw_name": "total",
+        "display_name": "Total",
+        "active": true
+      }
+    ],
+    "MLB_Props": [
+      {
+        "raw_name": "pitcher_strikeouts",
+        "display_name": "Pitcher Strikeouts",
+        "active": true
+      },
+      {
+        "raw_name": "total_bases",
+        "display_name": "Total Bases",
+        "active": true
+      },
+      {
+        "raw_name": "earned_runs",
+        "display_name": "Earned Runs",
+        "active": true
+      }
+    ]
+  }
+}
