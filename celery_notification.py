@@ -56,8 +56,8 @@ async def run_notify():
     sender_nba_mainline = NovigSender(filter_data=nba_mainlines, difference_amount=5000)
     sender_nba_props = NovigSender(filter_data=nba_props, difference_amount=3000)
 
-    sender_mlb_mainline = NovigSender(filter_data=nba_mainlines, difference_amount=5000)
-    sender_mlb_props = NovigSender(filter_data=nba_props, difference_amount=3000)
+    sender_mlb_mainline = NovigSender(filter_data=mlb_mainlines, difference_amount=5000)
+    sender_mlb_props = NovigSender(filter_data=mlb_props, difference_amount=3000)
 
     sender_nhl_mainline = NovigSender(filter_data=nhl_mainlines, difference_amount=5000)
     sender_nhl_props = NovigSender(filter_data=nhl_props, difference_amount=3000)
