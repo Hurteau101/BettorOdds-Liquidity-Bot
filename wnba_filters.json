@@ -1,0 +1,33 @@
+{
+  "WNBA": {
+    "WNBA_Mainlines": [
+      {
+        "raw_name": "total",
+        "display_name": "Total",
+        "active": true
+      }
+    ],
+    "WNBA_Props": [
+      {
+        "raw_name": "points",
+        "display_name": "Points",
+        "active": true
+      },
+      {
+        "raw_name": "rebounds",
+        "display_name": "Rebounds",
+        "active": true
+      },
+      {
+        "raw_name": "assists",
+        "display_name": "Assists",
+        "active": true
+      },
+      {
+        "raw_name": "points_rebounds_assists",
+        "display_name": "Points + Rebounds + Assists",
+        "active": true
+      }
+    ]
+  }
+}

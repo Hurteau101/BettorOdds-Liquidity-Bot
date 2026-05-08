@@ -23,6 +23,7 @@ class DiscordBot:
             "ncaab": os.getenv("DISCORD_WEBHOOK_URL_NCAAB"),
             "ufc": os.getenv("DISCORD_WEBHOOK_URL_UFC"),
             "mlb": os.getenv("DISCORD_WEBHOOK_URL_MLB"),
+            "wnba": os.getenv("DISCORD_WEBHOOK_URL_WNBA"),
         }
 
         if league.lower() not in MAPPER:

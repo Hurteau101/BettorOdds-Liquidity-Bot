@@ -38,6 +38,12 @@ async def run_notify():
         nba_mainlines = {"NBA": nba_data.get("NBA", {}).get("NBA_Mainlines")}
         nba_props = {"NBA": nba_data.get("NBA", {}).get("NBA_Props")}
 
+
+    with open("wnba_filters.json", "r") as f:
+        wnba_data = json.load(f)
+        wnba_mainlines = {"WNBA": wnba_data.get("WNBA", {}).get("WNBA_Mainlines")}
+        wnba_props = {"WNBA": wnba_data.get("WNBA", {}).get("WNBA_Props")}
+
     with open("nhl_filters.json", "r") as f:
         nhl_filters = json.load(f)
         nhl_mainlines = {"NHL": nhl_filters.get("NHL", {}).get("NHL_Mainlines")}
@@ -56,6 +62,9 @@ async def run_notify():
     sender_nba_mainline = NovigSender(filter_data=nba_mainlines, difference_amount=5000)
     sender_nba_props = NovigSender(filter_data=nba_props, difference_amount=3000)
 
+    sender_wnba_mainline = NovigSender(filter_data=wnba_mainlines, difference_amount=5000)
+    sender_wnba_props = NovigSender(filter_data=wnba_props, difference_amount=3000)
+
     sender_mlb_mainline = NovigSender(filter_data=mlb_mainlines, difference_amount=5000)
     sender_mlb_props = NovigSender(filter_data=mlb_props, difference_amount=3000)
 
@@ -73,7 +82,7 @@ async def run_notify():
     sender_ufc_alternates = NovigSender(filter_data=ufc_alternates, difference_amount=5000)
 
     (nfl_mainline_data, nfl_props_data, ncaaf_data, nba_mainline_data, nba_props_data, nhl_mainline_data, nhl_props_data,
-     ncaab_mainline_data, ufc_mainline_data, ufc_alternate_data, mlb_mainline_data, mlb_props_data) = await asyncio.gather(
+     ncaab_mainline_data, ufc_mainline_data, ufc_alternate_data, mlb_mainline_data, mlb_props_data, wnba_mainline_data, wnba_props_data) = await asyncio.gather(
         sender_nfl_mainline.runner(),
         sender_nfl_props.runner(),
         sender_ncaaf.runner(),
@@ -86,12 +95,15 @@ async def run_notify():
         sender_ufc_alternates.runner(),
         sender_mlb_mainline.runner(),
         sender_mlb_props.runner(),
+        sender_wnba_mainline.runner(),
+        sender_wnba_props.runner(),
     )
 
     nfl_manager = ProcessManager(redis_database=8, difference_amount=1500, league="NFL")
     ncaaf_manager = ProcessManager(redis_database=9, difference_amount=1500, league="NCAAF")
 
     nba_manager = ProcessManager(redis_database=10, difference_amount=1500, league="NBA")
+    wnba_manager = ProcessManager(redis_database=7, difference_amount=1500, league="WNBA")
     ncaab_manager = ProcessManager(redis_database=12, difference_amount=1500, league="NCAAB")
 
     nhl_manager = ProcessManager(redis_database=11, difference_amount=1500, league="NHL")
@@ -107,6 +119,9 @@ async def run_notify():
 
     nba_manager.manger(nba_mainline_data["NBA"], "NBA")
     nba_manager.manger(nba_props_data["NBA"], "NBA")
+
+    wnba_manager.manger(wnba_mainline_data["WNBA"], "WNBA")
+    wnba_manager.manger(wnba_props_data["WNBA"], "WNBA")
 
     nhl_manager.manger(nhl_mainline_data["NHL"], "NHL")
     nhl_manager.manger(nhl_props_data["NHL"], "NHL")
